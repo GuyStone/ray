@@ -1,4 +1,5 @@
 """Prepare Image Stage"""
+
 import asyncio
 import base64
 import importlib
@@ -311,7 +312,7 @@ class PrepareImageUDF(StatefulStageUDF):
         self.image_processor = ImageProcessor()
 
     def extract_image_info(self, messages: List[Dict]) -> List[_ImageType]:
-        """Extract vision information such as image and video from chat messages.
+        """Extract image information from chat messages.
 
         Args:
             messages: List of chat messages.
