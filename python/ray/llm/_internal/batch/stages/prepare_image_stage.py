@@ -1,4 +1,5 @@
 """Prepare Image Stage"""
+
 import asyncio
 import base64
 import importlib
@@ -336,7 +337,17 @@ class PrepareImageUDF(StatefulStageUDF):
             for content_item in content:
                 if content_item["type"] not in ("image", "image_url"):
                     continue
-                image = content_item[content_item["type"]]
+
+                image_data = content_item[content_item["type"]]
+                if content_item["type"] == "image_url" and isinstance(image_data, dict):
+                    # OpenAI nested format: {"image_url": {"url": "..."}}
+                    image = image_data.get("url")
+                    if image is None:
+                        raise ValueError("image_url dict must contain 'url' key")
+                else:
+                    # Simple format: {"image": "..."} or {"image_url": "..."}
+                    image = image_data
+
                 if not isinstance(image, str) and not isinstance(
                     image, self.Image.Image
                 ):
